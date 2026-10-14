@@ -1,0 +1,11 @@
+Instancia;Leitura_Status;Otimizacao_Status;Custo_Total;Caminho_Valido
+01_valido_simetrico_50.txt;SUCESSO;TIME_LIMIT;562.9;true
+02_valido_assimetrico_50.txt;SUCESSO;TIME_LIMIT;653.9;true
+03_caso_limite_minimo_02.txt;SUCESSO;OPTIMAL;15.0;true
+04_anomalia_destino_isolado.txt;SUCESSO;OPTIMAL;10024.0;true
+05_anomalia_custo_negativo.txt;SUCESSO;OPTIMAL;-5.0;true
+06_anomalia_subrota_obrigatoria.txt;SUCESSO;OPTIMAL;20008.0;true
+07_erro_linhas_insuficientes.txt;ERRO_FORMATO;N/A;N/A;N/A
+08_erro_matriz_nao_quadrada.txt;SUCESSO;OPTIMAL;25.0;true
+09_erro_arquivo_vazio.txt;ERRO_FORMATO;N/A;N/A;N/A
+10_erro_caractere_invalido.txt;ERRO_FORMATO;N/A;N/A;N/A
