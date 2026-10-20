@@ -9,7 +9,7 @@ using Combinatorics
 using Plots
 using Random
 
-include("pchm_solver.jl")
+include("pchm_solver_v1.jl")
 
 # 2. LEITOR COM TRATAMENTO DE EXCEÇÃO COMPLETO (CORRIGIDO)
 function ler_instancia_po(caminho_arquivo::String)

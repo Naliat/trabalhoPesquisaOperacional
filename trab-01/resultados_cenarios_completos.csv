@@ -1,0 +1,14 @@
+Instancia;Leitura_Status;Otimizacao_Status;Custo_Total;Caminho_Valido
+br17.atsp;SUCESSO;TIME_LIMIT;34.0;true
+ft53.atsp;SUCESSO;TIME_LIMIT;6681.0;true
+ft70.atsp;SUCESSO;OPTIMAL;37655.0;true
+ftv33.atsp;SUCESSO;OPTIMAL;1275.0;true
+ftv35.atsp;SUCESSO;OPTIMAL;1443.0;true
+ftv38.atsp;SUCESSO;OPTIMAL;1511.0;true
+ftv44.atsp;SUCESSO;OPTIMAL;1614.0;true
+ftv47.atsp;SUCESSO;TIME_LIMIT;1782.0;true
+ftv55.atsp;SUCESSO;TIME_LIMIT;1713.0;true
+ftv64.atsp;SUCESSO;TIME_LIMIT;1850.0;true
+ftv70.atsp;SUCESSO;TIME_LIMIT;2242.0;true
+p43.atsp;SUCESSO;TIME_LIMIT;6010.0;true
+ry48p.atsp;SUCESSO;TIME_LIMIT;15474.0;true
