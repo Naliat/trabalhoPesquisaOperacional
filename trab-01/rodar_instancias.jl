@@ -9,8 +9,7 @@ using Combinatorics
 using Plots
 using Random
 
-# CORRIGIDO: Inclui explicitamente o novo arquivo v2 do resolvedor
-include("pchm_solver_v2.jl")
+include("pchm_solver.jl")
 
 # 2. LEITOR ROBUSTO DA TSPLIB (.ATSP) COM RECONSTRUTOR DE QUEBRAS DE LINHA
 function ler_instancia_po(caminho_arquivo::String)
