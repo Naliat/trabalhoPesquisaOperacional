@@ -1,157 +1,157 @@
 using JuMP
-using GLPK
+using Gurobi
 using LinearAlgebra
 
 """
-    validate_hamiltonian_path(active_arcs::Vector{Tuple{Int,Int}}, n::Int, s::Int, t::Int)
+    validate_hamiltonian_path(n::Int, active_arcs::Vector{Tuple{Int,Int}}, s::Int, t::Int)
 
 Verifica se uma lista de arcos passados como (origem, destino) descreve um caminho
 Hamiltoniano válido iniciando em 's', terminando em 't' e visitando todos os outros
 vértices do grafo exatamente uma vez (Atividade 1).
 """
-function validate_hamiltonian_path(active_arcs::Vector{Tuple{Int,Int}}, n::Int, s::Int, t::Int)
-    # 1. Deve possuir exatamente n-1 arcos para conectar n vértices sem ciclos
+function validate_hamiltonian_path(n::Int, active_arcs::Vector{Tuple{Int,Int}}, s::Int, t::Int)
+    # Valida se a quantidade de arcos ativos e igual a n - 1
     if length(active_arcs) != n - 1
         return false
     end
 
-    # Criar estruturas de mapeamento para checar os graus dos nós e conexões
-    adj_map = Dict{Int, Int}()
+    # Inicializa vetores para contagem de graus de entrada, saida e dicionario de adjacencia
     in_degree = zeros(Int, n)
     out_degree = zeros(Int, n)
+    adj_map = Dict{Int, Int}()
 
-    for (i, j) in active_arcs
-        # Validar limites dos nós
-        if i < 1 || i > n || j < 1 || j > n
+    # Varre os arcos para computar os graus e mapear os vizinhos
+    for (u, v) in active_arcs
+        # Barramento contra indices fora dos limites do grafo ou loops diagonais
+        if u < 1 || u > n || v < 1 || v > n || u == v
             return false
         end
-        out_degree[i] += 1
-        in_degree[j] += 1
-        adj_map[i] = j
+        out_degree[u] += 1
+        in_degree[v] += 1
+        adj_map[u] = v
     end
 
-    # 2. Validar restrições de Grau/Fluxo (Equações 3 a 8 do roteiro)
-    if out_degree[s] != 1 || in_degree[s] != 0 return false end # Sai de s, não volta para s
-    if in_degree[t] != 1 || out_degree[t] != 0 return false end # Chega em t, não sai de t
+    # Valida restricoes de borda da origem s: deve apenas sair fluxo
+    if out_degree[s] != 1 || in_degree[s] != 0
+        return false
+    end
+    
+    # Valida restricoes de borda do destino t: deve apenas chegar fluxo
+    if in_degree[t] != 1 || out_degree[t] != 0
+        return false
+    end
 
+    # Valida se cada nó intermediario possui exatamente uma entrada e uma saida
     for k in 1:n
         if k != s && k != t
-            if in_degree[k] != 1 || out_degree[k] != 1
-                return false # Nós intermediários devem ter exatamente 1 entrada e 1 saída
+            if out_degree[k] != 1 || in_degree[k] != 1
+                return false
             end
         end
     end
 
-    # 3. Validar Conectividade Base: Percorrer o caminho de s até o final para garantir que não há subrotas
+    # Realiza o rastreamento sequencial para garantir conectividade e bloquear subciclos isolados
     visited = Set{Int}([s])
     current = s
     while haskey(adj_map, current)
-        current = adj_map[current]
-        push!(visited, current)
-        if current == t
-            break
+        next_node = adj_map[current]
+        # Se tentar retornar para um nó ja visitado, detecta um subciclo invalido
+        if in(next_node, visited)
+            return false
         end
+        push!(visited, next_node)
+        current = next_node
     end
 
-    # O caminho só é hamiltoniano se o número de nós visitados conectados a partir de s for igual a n
-    return length(visited) == n
+    # O caminho so e valido se terminou em t e o tamanho da lista de visitados cobre todos os n nós
+    return (current == t) && (length(visited) == n)
 end
 
-
 """
-    solve_mphp_mtz(cost_matrix::Matrix{Float64}; is_integer::Bool=true, time_limit_sec::Int=180)
+    solve_mphp_model(cost_matrix::Matrix{Float64}; is_integer::Bool=true, time_limit_sec::Real=180.0)
 
-Constrói e resolve o modelo matemático do PCHM com limites MTZ.
-Permite alternar entre o modelo Inteiro Puro e a Relaxação Linear (Atividades 2 e 3).
+Modela e resolve o PCHM utilizando um solucionador comercial parametrizado de forma generica (Atividades 2 e 3).
 """
-function solve_mphp_mtz(cost_matrix::Matrix{Float64}; is_integer::Bool=true, time_limit_sec::Int=180)
+function solve_mphp_model(cost_matrix::Matrix{Float64}; is_integer::Bool=true, time_limit_sec::Real=180.0)
     n = size(cost_matrix, 1)
     s = 1     # Origem fixada pelo enunciado
     t = n     # Destino fixado pelo enunciado
 
-    # Instanciar o modelo matemático com o GLPK
-    model = Model(GLPK.Optimizer)
-    set_time_limit_sec(model, time_limit_sec)
+    # Instanciar o modelo matematico utilizando o otimizador Gurobi
+    model = Model(Gurobi.Optimizer)
+    set_silent(model) # Desativa mensagens internas extensas do solver no terminal
+    set_time_limit_sec(model, time_limit_sec) # Define o limitador de tempo por instancia
 
     # --------------------------------------------------------------------------
-    # CONFIGURAÇÃO CORRETA DOS PARÂMETROS DE CORTES NATIVOS DO GLPK
+    # CONFIGURAÇÃO DE ALTA PERFORMANCE NATIVA DO SOLVER COMERCIAL
     # --------------------------------------------------------------------------
-    set_attribute(model, "presolve", 1)  # Ativa o pré-resolvedor (GLP_ON)
-    set_attribute(model, "gmi_cuts", 1)  # Ativa os cortes Gomory (gmi_cuts)
-    set_attribute(model, "mir_cuts", 1)  # Ativa os cortes Mixed Integer Rounding (mir_cuts)
+    set_attribute(model, "Presolve", 2)  # Ativa o pre-resolvedor agressivo comercial (Nivel 2)
+    set_attribute(model, "Cuts", 2)      # Forca a geracao agressiva de planos de corte (Nivel 2)
     # --------------------------------------------------------------------------
 
-    # 2.1 Variáveis de Decisão
-    # x[i,j] = 1 se o arco pertence ao caminho (Binário ou Contínuo entre 0 e 1 se for Relaxação)
-    if is_integer
-        @variable(model, x[1:n, 1:n], Bin)
+    # Instancia as variaveis de decisao de acordo com a flag de relaxacao linear
+    if !is_integer
+        @variable(model, 0.0 <= x[1:n, 1:n] <= 1.0) # Variavel continua para a Atividade 2
+        @variable(model, u[1:n] >= 0.0)
     else
-        @variable(model, 0 <= x[1:n, 1:n] <= 1)
+        @variable(model, x[1:n, 1:n], Bin) # Variavel binaria pura para a Atividade 3
+        @variable(model, u[1:n] >= 0, Int) # Atributo posicional do MTZ
     end
 
-    # u[i] representa a posição de visitação do vértice i ao longo da rota
-    @variable(model, u[1:n], Int)
+    # Define a funcao objetivo de minimizacao de custos excluindo a diagonal principal
+    @objective(model, Min, sum(cost_matrix[i, j] * x[i, j] for i in 1:n, j in 1:n if i != j))
 
-    # Impedir que o solver selecione arcos diagonais falsos (i, i)
+    # Restricao de barramento diagonal: impede conexoes auto-referenciadas
     for i in 1:n
         @constraint(model, x[i, i] == 0)
     end
 
-    # 2.1 Função Objetivo: Minimizar a somatória do custo dos arcos selecionados
-    @objective(model, Min, sum(cost_matrix[i, j] * x[i, j] for i in 1:n, j in 1:n))
+    # Aplica as restricoes funcionais de fluxo de grau de entrada e saida da TSPLIB
+    @constraint(model, sum(x[s, j] for j in 1:n if j != s) == 1) # Garante saida da origem s
+    @constraint(model, sum(x[i, t] for i in 1:n if i != t) == 1) # Garante chegada no destino t
+    @constraint(model, sum(x[i, s] for i in 1:n if i != s) == 0) # Impede retorno para a origem s
+    @constraint(model, sum(x[t, j] for j in 1:n if j != t) == 0) # Impede saida a partir do destino t
 
-    # 2.2 Restrições Funcionais de Grau / Conservação de Fluxo
-    @constraint(model, sum(x[s, j] for j in 1:n) == 1) # Sai de s (Eq 3)
-    @constraint(model, sum(x[i, t] for i in 1:n) == 1) # Chega em t (Eq 4)
-    @constraint(model, sum(x[i, s] for i in 1:n) == 0) # Não retorna a s (Eq 5)
-    @constraint(model, sum(x[t, j] for j in 1:n) == 0) # Não sai de t (Eq 6)
-
-    # Nós Intermediários (Eq 7 e 8)
+    # Garante a conservacao de fluxo unitario para todos os nós intermediarios do grafo
     for k in 1:n
         if k != s && k != t
-            @constraint(model, sum(x[i, k] for i in 1:n) == 1) # Chega em k exatamente uma vez
-            @constraint(model, sum(x[k, j] for j in 1:n) == 1) # Sai de k exatamente uma vez
+            @constraint(model, sum(x[i, k] for i in 1:n if i != k) == 1)
+            @constraint(model, sum(x[k, j] for j in 1:n if j != k) == 1)
         end
     end
 
-    # 3. Restrições Miller-Tucker-Zemlin (MTZ) de Eliminação de Subrotas
-    @constraint(model, u[s] == 1) # s ocupa a primeira posição (Eq 9)
-
-    for i in 1:n
-        for j in 1:n
-            if j != s && i != j
-                # Equação posicional 10: impede subciclos isolados no grafo
-                @constraint(model, u[i] - u[j] + n * x[i, j] <= n - 1)
-            end
-        end
-    end
-
-    # Limites das variáveis de ordenação para nós além da origem (Eq 11)
+    # Fixa a posicao inicial da ordenacao posicional MTZ
+    @constraint(model, u[s] == 1)
+    
+    # Define os limites superior e inferior das posicoes dos nós subsequentes
     for i in 1:n
         if i != s
             @constraint(model, 2 <= u[i] <= n)
         end
     end
 
-    # Otimizar o modelo matemático
-    optimize!(model)
+    # Aplica as restricoes logicas de Miller-Tucker-Zemlin (MTZ) para quebrar subrotas isoladas
+    for i in 1:n, j in 1:n
+        if j != s && i != j
+            @constraint(model, u[i] - u[j] + n * x[i, j] <= n - 1)
+        end
+    end
 
-    # Coletar métricas finais de retorno
-    status = termination_status(model)
-    
-    if status == OPTIMAL || status == TIME_LIMIT
-        obj_value = objective_value(model)
-        x_values = value.(x)
-        
-        # Extrair a sequência de arcos ativos da solução obtida
-        active_arcs = Tuple{Int,Int}[]
+    # Aciona o solver comercial e calcula o tempo gasto puramente no processamento interno
+    tempo_exec = @elapsed optimize!(model)
+    st = termination_status(model)
+    tem_sol = (result_count(model) > 0)
+    custo = tem_sol ? objective_value(model) : Inf
+
+    # Extrai o vetor de arcos estruturados se houver solucao viavel inteira
+    arcos_solucao = Tuple{Int, Int}[]
+    if tem_sol && is_integer
         for i in 1:n, j in 1:n
-            if x_values[i, j] > 0.5 # Filtro binário
-                push!(active_arcs, (i, j))
+            if i != j && value(x[i, j]) > 0.5
+                push!(arcos_solucao, (i, j))
             end
         end
-        return obj_value, active_arcs, status
-    else
-        return Inf, Tuple{Int,Int}[], status
     end
+
+    return (status = st, custo = custo, tempo = tempo_exec, arcos = arcos_solucao)
 end

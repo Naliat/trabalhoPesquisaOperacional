@@ -2,108 +2,170 @@ using Plots
 using Random
 
 """
-    read_tsplib_instance(file_path::String)
+    carregar_instancia_txt(caminho::String)
 
-Interpreta cabeçalhos e quebras de linha de arquivos .atsp no padrão da TSPLIB.
+Lê e valida o formato das instâncias do tipo TXT comum.
 """
-function read_tsplib_instance(file_path::String)
-    lines = filter(l -> !isempty(strip(l)) && !startswith(strip(l), "#"), readlines(file_path))
-    if isempty(lines) error("Arquivo completamente vazio.") end
+function carregar_instancia_txt(caminho::String)
+    if !isfile(caminho) || filesize(caminho) == 0
+        error("Arquivo vazio ou inexistente.")
+    end
+    # Filtra linhas vazias removendo espacos em branco nas bordas
+    linhas = filter(!isempty, strip.(readlines(caminho)))
+    if isempty(linhas)
+        error("Arquivo sem conteudo legivel.")
+    end
     
+    # Extrai a dimensao n contida na primeira linha
+    n = tryparse(Int, linhas[1])
+    if n === nothing || n < 2
+        error("Numero de vertices invalido: $(linhas[1])")
+    end
+    if length(linhas) < n + 1
+        error("Linhas insuficientes: esperado $(n + 1), lido $(length(linhas))")
+    end
+    
+    # Preenche a matriz bidimensional linha por linha
+    C = zeros(Float64, n, n)
+    for i in 1:n
+        tokens = split(linhas[i + 1])
+        if length(tokens) != n
+            error("Linha $i tem $(length(tokens)) colunas (esperado $n)")
+        end
+        for j in 1:n
+            val = tryparse(Float64, tokens[j])
+            if val === nothing
+                error("Caractere invalido em ($i, $j): $(tokens[j])")
+            end
+            if val < 0.0
+                error("Custo negativo em ($i, $j): $val")
+            end
+            C[i, j] = val
+        end
+    end
+    return n, C
+end
+
+"""
+    carregar_instancia_atsp(caminho::String)
+
+Lê cabeçalhos estruturados e corrige as quebras de linha dos arquivos .atsp da TSPLIB.
+"""
+function carregar_instancia_atsp(caminho::String)
+    if !isfile(caminho) || filesize(caminho) == 0
+        error("Arquivo vazio ou inexistente.")
+    end
+    linhas = readlines(caminho)
     n = 0
-    raw_values = Float64[]
-    inside_weight_section = false
+    valores_brutos = Float64[]
+    na_secao_pesos = false
     
-    for line in lines
-        line_clean = strip(line)
-        
-        # Captura a dimensao tratando o separador de dois pontos com seguranca
-        if startswith(uppercase(line_clean), "DIMENSION")
-            parts = split(line_clean, ":")
-            n = parse(Int, strip(parts[2]))
-        elseif startswith(uppercase(line_clean), "EDGE_WEIGHT_SECTION")
-            inside_weight_section = true
+    # Varre a estrutura do arquivo procurando marcas do cabecalho TSPLIB
+    for linha in linhas
+        linha_limpa = strip(linha)
+        if isempty(linha_limpa)
             continue
-        elseif startswith(uppercase(line_clean), "EOF") || startswith(uppercase(line_clean), "TOUR_SECTION")
+        end
+        # Extrai o valor numerico da dimensao n contida apos o delimitador de dois pontos
+        if startswith(uppercase(linha_limpa), "DIMENSION")
+            partes = split(linha_limpa, ":")
+            n = parse(Int, strip(partes[end]))
+        # Identifica a flag de secao de custos para iniciar a coleta sequencial
+        elseif startswith(uppercase(linha_limpa), "EDGE_WEIGHT_SECTION")
+            na_secao_pesos = true
+            continue
+        # Interrompe a leitura caso encontre o finalizador oficial do formato
+        elseif startswith(uppercase(linha_limpa), "EOF") || startswith(uppercase(linha_limpa), "TOUR_SECTION")
             break
         end
         
-        if inside_weight_section
-            for val in split(line_clean) 
-                push!(raw_values, parse(Float64, val)) 
+        # Junta os dados numericos em um array de fluxo continuo contornando quebras falsas de linha
+        if na_secao_pesos
+            dados_linha = split(linha_limpa)
+            for val in dados_linha
+                push!(valores_brutos, parse(Float64, val))
             end
         end
     end
     
-    if n == 0 || isempty(raw_values)
-        error("Formato invalido ou secao de pesos nao encontrada no arquivo .atsp.")
+    if n == 0 || length(valores_brutos) < n * n
+        error("Formato atsp invalido ou pesos insuficientes.")
     end
     
-    cost_matrix = zeros(Float64, n, n)
+    # Reconstroi o bloco quadrado n x n utilizando os valores lineares processados
+    C = zeros(Float64, n, n)
     idx = 1
     for i in 1:n, j in 1:n
-        if idx <= length(raw_values)
-            cost_matrix[i, j] = raw_values[idx]
-            idx += 1
-        end
+        C[i, j] = valores_brutos[idx]
+        idx += 1
     end
-    return n, cost_matrix
+    return n, C
 end
 
 """
-    generate_route_plot(n::Int, active_arcs::Vector{Tuple{Int,Int}}, instance_name::String, save_folder::String)
+    gerar_grafico_caminho(n::Int, arcos::Vector{Tuple{Int, Int}}, nome_instancia::String, pasta_saida::String)
 
-Plota o mapa disperso em 2D com degradê de cores sequencial baseado no progresso da rota.
+Gera o mapa plano cartesiano contínuo em degradê para cada resultado viável encontrado.
 """
-function generate_route_plot(n::Int, active_arcs::Vector{Tuple{Int,Int}}, instance_name::String, save_folder::String)
-    if !ispath(save_folder) mkdir(save_folder) end
-    if isempty(active_arcs) return end 
-
+function gerar_grafico_caminho(n::Int, arcos::Vector{Tuple{Int, Int}}, nome_instancia::String, pasta_saida::String)
+    if isempty(arcos) return end
+    if !isdir(pasta_saida) mkpath(pasta_saida) end
     gr()
-
-    # Semente estavel baseada no nome do arquivo para manter os nos fixos no mapa
-    Random.seed!(abs(hash(instance_name) % 10000))
-    x_nodes = rand(5.0:95.0, n)
-    y_nodes = rand(5.0:95.0, n)
     
+    # Fixa uma semente estavel gerada por hash para travar a posicao x,y das cidades no canvas
+    semente = hash(nome_instancia) % 10000
+    Random.seed!(abs(semente))
+    x_nos = rand(5.0:95.0, n)
+    y_nos = rand(5.0:95.0, n)
+    
+    # Inicia a tela de desenho bidimensional limpa com fundo branco
     p = plot(
-        title = "Mapa Logistico Rastreavel (N = $n)\nInstancia: $instance_name",
-        titlefont = font(12, :bold),
-        size = (1100, 850),
+        title = "PCHM MTZ - $nome_instancia (n = $n)",
+        titlefont = font(11, :bold),
+        size = (1000, 800),
         grid = true,
-        gridalpha = 0.1,
-        background_color = :white
+        gridalpha = 0.15,
+        background_color = :white,
+        legend = :topright
     )
     
-    adj_dict = Dict(i => j for (i, j) in active_arcs)
-    route_sequence = Int[]
-    current = 1
-    push!(route_sequence, current)
-    while haskey(adj_dict, current) && length(route_sequence) < n
-        current = adj_dict[current]
-        push!(route_sequence, current)
+    # Ordena a sequencia dos nos com base no dicionario de conexao para criar o efeito visual de gradiente
+    adj = Dict(u => v for (u, v) in arcos)
+    sequencia = Int[]
+    atual = 1
+    push!(sequencia, atual)
+    while haskey(adj, atual) && length(sequencia) < n
+        atual = adj[atual]
+        push!(sequencia, atual)
     end
-
-    colors_gradient = cgrad(:viridis, max(1, length(route_sequence)-1), categorical=true)
-    if length(route_sequence) > 1
-        for idx in 1:(length(route_sequence)-1)
-            i, j = route_sequence[idx], route_sequence[idx+1]
-            plot!([x_nodes[i], x_nodes[j]], [y_nodes[i], y_nodes[j]], color=colors_gradient[idx], linewidth=2.5, alpha=0.9, label="")
-            scatter!([(x_nodes[i]+x_nodes[j])/2], [(y_nodes[i]+y_nodes[j])/2], marker=:utriangle, markersize=5, color=colors_gradient[idx], markerstrokewidth=0, label="")
+    
+    # Gera a escala de cores continua (viridis) proporcional ao tamanho do percurso sequencial
+    gradiente = cgrad(:viridis, max(1, length(sequencia) - 1), categorical=true)
+    if length(sequencia) > 1
+        for idx in 1:(length(sequencia) - 1)
+            u = sequencia[idx]
+            v = sequencia[idx + 1]
+            # Desenha o segmento de linha com a respectiva cor do degradê
+            plot!([x_nos[u], x_nos[v]], [y_nos[u], y_nos[v]], color = gradiente[idx], linewidth = 2.0, alpha = 0.85, label = "")
+            
+            # Insere marcadores de direcao triangulares posicionados no ponto medio do segmento
+            mx = (x_nos[u] + x_nos[v]) / 2.0
+            my = (y_nos[u] + y_nos[v]) / 2.0
+            scatter!([mx], [my], marker = :utriangle, markersize = 4, color = gradiente[idx], markerstrokewidth = 0, label = "")
         end
     end
     
-    scatter!(x_nodes, y_nodes, markersize=6, color=:lightgrey, label="Cidades")
-    scatter!([x_nodes[1]], [y_nodes[1]], color=:lime, markersize=14, marker=:square, label="INICIO (Cidade 1)")
-    scatter!([x_nodes[n]], [y_nodes[n]], color=:crimson, markersize=14, marker=:star8, label="FIM (Cidade $n)")
+    # Plota a dispersao das cidades e destaca com formatos chamativos a Origem (1) e o Destino (N)
+    scatter!(x_nos, y_nos, markersize = (n > 50 ? 5 : 7), color = :lightgrey, markerstrokecolor = :black, markerstrokewidth = 0.5, label = "Vertices")
+    scatter!([x_nos[1]], [y_nos[1]], color = :lime, markersize = 12, marker = :square, label = "Origem (s=1)")
+    scatter!([x_nos[n]], [y_nos[n]], color = :crimson, markersize = 12, marker = :star8, label = "Destino (t=$n)")
     
+    # Insere as anotacoes numericas se a dimensao nao poluir a leitura do grafico
     if n <= 60
-        for i in 1:n
-            annotate!(x_nodes[i], y_nodes[i] + 2.5, text(string(i), :black, :center, :bold, 6))
-        end
+        for i in 1:n annotate!(x_nos[i], y_nos[i] + 2.0, text(string(i), :black, :center, :bold, 6)) end
     end
     
-    image_name = replace(instance_name, r"\.atsp$" => ".png")
-    savefig(p, joinpath(save_folder, endswith(image_name, ".png") ? image_name : image_name * ".png"))
-    println("     [INFO] Grafico de rota gerado: ", joinpath(save_folder, image_name))
+    # Ajusta o sufixo da imagem para gerar e salvar o arquivo png fisico no disco do Linux
+    nome_png = replace(nome_instancia, r"\.(txt|atsp)$" => ".png")
+    savefig(p, joinpath(pasta_saida, nome_png))
 end
