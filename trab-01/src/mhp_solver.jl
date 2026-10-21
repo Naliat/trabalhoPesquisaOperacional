@@ -82,13 +82,10 @@ function solve_mphp_model(cost_matrix::Matrix{Float64}; is_integer::Bool=true, t
     set_silent(model) # Desativa mensagens internas extensas do solver no terminal
     set_time_limit_sec(model, time_limit_sec) # Define o limitador de tempo por instancia
 
-    # --------------------------------------------------------------------------
     # CONFIGURAÇÃO DE ALTA PERFORMANCE NATIVA DO SOLVER COMERCIAL
-    # --------------------------------------------------------------------------
     set_attribute(model, "Presolve", 2)  # Ativa o pre-resolvedor agressivo comercial (Nivel 2)
     set_attribute(model, "Cuts", 2)      # Forca a geracao agressiva de planos de corte (Nivel 2)
-    # --------------------------------------------------------------------------
-
+    
     # Instancia as variaveis de decisao de acordo com a flag de relaxacao linear
     if !is_integer
         @variable(model, 0.0 <= x[1:n, 1:n] <= 1.0) # Variavel continua para a Atividade 2
