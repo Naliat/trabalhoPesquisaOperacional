@@ -135,20 +135,20 @@ function solve_mphp_model(cost_matrix::Matrix{Float64}; is_integer::Bool=true, t
     end
 
     # Aciona o solver comercial e calcula o tempo gasto puramente no processamento interno
-    tempo_exec = @elapsed optimize!(model)
+    execution_time = @elapsed optimize!(model)
     st = termination_status(model)
-    tem_sol = (result_count(model) > 0)
-    custo = tem_sol ? objective_value(model) : Inf
+    has_solution = (result_count(model) > 0)
+    cost = has_solution ? objective_value(model) : Inf
 
     # Extrai o vetor de arcos estruturados se houver solucao viavel inteira
-    arcos_solucao = Tuple{Int, Int}[]
-    if tem_sol && is_integer
+    solution_arcs = Tuple{Int, Int}[]
+    if has_solution && is_integer
         for i in 1:n, j in 1:n
             if i != j && value(x[i, j]) > 0.5
-                push!(arcos_solucao, (i, j))
+                push!(solution_arcs, (i, j))
             end
         end
     end
 
-    return (status = st, custo = custo, tempo = tempo_exec, arcos = arcos_solucao)
+    return (status = st, custo = cost, tempo = execution_time, arcos = solution_arcs)
 end
