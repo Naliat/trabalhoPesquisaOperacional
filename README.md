@@ -2,6 +2,12 @@
 
 ---
 
+### Relatório Técnico
+[![Visualizar PDF](https://img.shields.io/badge/Visualizar_Relatório-PDF-red?style=for-the-badge&logo=adobe-acrobat-reader)](./trab-01/relatorioTp1/main.pdf)
+
+> Clique no botão acima para abrir o relatório completo no visualizador do GitHub ou [clique aqui para baixar o PDF](./trab-01/relatorioTp1/main.pdf).
+
+
 ## Como Executar o Projeto no Ubuntu
 
 ### 1. Clonar ou Abrir a Pasta no VS Code
