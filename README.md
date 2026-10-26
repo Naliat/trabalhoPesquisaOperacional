@@ -8,43 +8,30 @@
 > Clique no botão acima para abrir o relatório completo no visualizador do GitHub ou [clique aqui para baixar o PDF](./trab-01/relatorioTp1/main.pdf).
 
 
-## Como Executar o Projeto no Ubuntu
+## Como Executar o Trabalho 01
 
-### 1. Clonar ou Abrir a Pasta no VS Code
-Abra o terminal do seu Ubuntu (`Ctrl + Alt + T`) ou o VS Code e certifique-se de estar dentro do diretório raiz do projeto:
+### 1. Acessar a pasta do Trabalho 01
+No terminal, entre no diretório do Trabalho 01:
 ```bash
-cd /caminho/para/a/pasta/Trabalho_PO_01
+cd trab-01
 ```
 
-### 2. Inicializar o Ambiente Virtual e Instalar as Dependências
-Abra o terminal integrado do VS Code e inicie o interpretador do Julia:
+### 2. Instalar as Dependências (Primeira Execução)
+Caso ainda não tenha instalado as dependências do ambiente local (JuMP, Gurobi, Plots, etc.):
 ```bash
-julia
+julia --project=. -e 'using Pkg; Pkg.instantiate()'
 ```
 
-Dentro do prompt do Julia (`julia>`), entre no gerenciador de pacotes pressionando a tecla **`]`** e ative o ambiente local baseado nos arquivos `.toml` movidos:
-```julia
-(@v1.13) pkg> activate .
-(Trabalho_PO_01) pkg> instantiate
-```
-*O comando `instantiate` lerá o arquivo `Project.toml` e vinculará automaticamente o JuMP, GLPK, Plots e demais dependências ao cache global do seu sistema de forma instantânea.*
-
-Para retornar ao prompt normal de execução, pressione a tecla **`Backspace`**:
-```julia
-(Trabalho_PO_01) pkg> [Backspace]
-julia> 
+### 3. Executar o Pipeline Completo
+Para executar a leitura das instâncias, a relaxação linear (Atividade 2), o modelo inteiro com limite de 3 minutos (Atividade 3), a validação de caminhos (Atividade 1) e a geração dos relatórios e gráficos:
+```bash
+julia --project=. main.jl
 ```
 
-### 3. Gerar as Instâncias Geométricas de Teste
-Para fabricar as 10 matrizes de custos euclidianas (incluindo as anomalias matematicamente incorretas e os grafos válidos com **tamanho de 50 nós**), execute:
-```julia
-julia> include("gerar_instancias.jl")
-```
-*Uma pasta chamada `instancias/` será criada contendo todos os arquivos `.txt` estruturados.*
+Os resultados detalhados serão salvos em:
+* `data/resultados_completos_pchm.csv`: Tabela estruturada com custos, tempos, GAP e rotas.
+* `data/relatorio_pchm_gurobi.txt`: Log legível em texto puro.
+* `graficos/`: Imagens PNG com os mapas e as rotas encontradas em degradê.
+* `relatorioTp1/main.pdf`: Relatório técnico consolidado em LaTeX.
 
-### 4. Executar o Pipeline Mestre e Gerar os Mapas Rastreáveis
-Para rodar a leitura automatizada, resolver o modelo inteiro via GLPK em lote, validar o fluxo e plotar as rotas em degradê colorido, execute:
-```julia
-julia> include("rodar_instancias.jl")
-```
 ---
