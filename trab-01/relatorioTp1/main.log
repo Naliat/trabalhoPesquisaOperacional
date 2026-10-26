@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2026.3.13)  26 OCT 2026 14:52
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2026.3.13)  26 OCT 2026 19:28
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -438,100 +438,101 @@ Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             See the microtype manual for details.
  [1
 
-{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}] [2]
-<../graficos/01_valido_simetrico_50.png, id=68, 1003.75pt x 803.0pt>
+{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}]
+<../graficos/01_valido_simetrico_50.png, id=61, 1003.75pt x 803.0pt>
 File: ../graficos/01_valido_simetrico_50.png Graphic file (type png)
 <use ../graficos/01_valido_simetrico_50.png>
-Package pdftex.def Info: ../graficos/01_valido_simetrico_50.png  used on input line 115.
+Package pdftex.def Info: ../graficos/01_valido_simetrico_50.png  used on input line 117.
 (pdftex.def)             Requested size: 237.63522pt x 190.10184pt.
-<../graficos/02_valido_assimetrico_50.png, id=69, 1003.75pt x 803.0pt>
+<../graficos/02_valido_assimetrico_50.png, id=62, 1003.75pt x 803.0pt>
 File: ../graficos/02_valido_assimetrico_50.png Graphic file (type png)
 <use ../graficos/02_valido_assimetrico_50.png>
-Package pdftex.def Info: ../graficos/02_valido_assimetrico_50.png  used on input line 121.
+Package pdftex.def Info: ../graficos/02_valido_assimetrico_50.png  used on input line 123.
 (pdftex.def)             Requested size: 237.63522pt x 190.10184pt.
-<../graficos/03_caso_limite_minimo_02.png, id=70, 1003.75pt x 803.0pt>
+ [2]
+<../graficos/03_caso_limite_minimo_02.png, id=69, 1003.75pt x 803.0pt>
 File: ../graficos/03_caso_limite_minimo_02.png Graphic file (type png)
 <use ../graficos/03_caso_limite_minimo_02.png>
-Package pdftex.def Info: ../graficos/03_caso_limite_minimo_02.png  used on input line 130.
+Package pdftex.def Info: ../graficos/03_caso_limite_minimo_02.png  used on input line 132.
 (pdftex.def)             Requested size: 158.42851pt x 126.74272pt.
-<../graficos/04_anomalia_destino_isolado.png, id=71, 1003.75pt x 803.0pt>
+<../graficos/04_anomalia_destino_isolado.png, id=70, 1003.75pt x 803.0pt>
 File: ../graficos/04_anomalia_destino_isolado.png Graphic file (type png)
 <use ../graficos/04_anomalia_destino_isolado.png>
-Package pdftex.def Info: ../graficos/04_anomalia_destino_isolado.png  used on input line 136.
+Package pdftex.def Info: ../graficos/04_anomalia_destino_isolado.png  used on input line 138.
 (pdftex.def)             Requested size: 158.42851pt x 126.74272pt.
-<../graficos/06_anomalia_subrota_obrigatoria.png, id=72, 1003.75pt x 803.0pt>
+<../graficos/06_anomalia_subrota_obrigatoria.png, id=71, 1003.75pt x 803.0pt>
 File: ../graficos/06_anomalia_subrota_obrigatoria.png Graphic file (type png)
 <use ../graficos/06_anomalia_subrota_obrigatoria.png>
-Package pdftex.def Info: ../graficos/06_anomalia_subrota_obrigatoria.png  used on input line 142.
+Package pdftex.def Info: ../graficos/06_anomalia_subrota_obrigatoria.png  used on input line 144.
 (pdftex.def)             Requested size: 158.42851pt x 126.74272pt.
-<../graficos/br17.png, id=73, 1003.75pt x 803.0pt>
+<../graficos/br17.png, id=72, 1003.75pt x 803.0pt>
 File: ../graficos/br17.png Graphic file (type png)
 <use ../graficos/br17.png>
-Package pdftex.def Info: ../graficos/br17.png  used on input line 153.
+Package pdftex.def Info: ../graficos/br17.png  used on input line 155.
 (pdftex.def)             Requested size: 237.63522pt x 190.10184pt.
-<../graficos/ftv33.png, id=74, 1003.75pt x 803.0pt>
+<../graficos/ftv33.png, id=73, 1003.75pt x 803.0pt>
 File: ../graficos/ftv33.png Graphic file (type png)
 <use ../graficos/ftv33.png>
-Package pdftex.def Info: ../graficos/ftv33.png  used on input line 159.
+Package pdftex.def Info: ../graficos/ftv33.png  used on input line 161.
 (pdftex.def)             Requested size: 237.63522pt x 190.10184pt.
- [3 <../graficos/01_valido_simetrico_50.png> <../graficos/02_valido_assimetrico_50.png> <../graficos/03_caso_limite_minimo_02.png> <../graficos/04_anomalia_destino_isolado.png> <../graficos/06_anomalia_subrota_obrigatoria.png>]
-<../graficos/ftv35.png, id=84, 1003.75pt x 803.0pt>
+<../graficos/ftv35.png, id=74, 1003.75pt x 803.0pt>
 File: ../graficos/ftv35.png Graphic file (type png)
 <use ../graficos/ftv35.png>
-Package pdftex.def Info: ../graficos/ftv35.png  used on input line 168.
+Package pdftex.def Info: ../graficos/ftv35.png  used on input line 170.
 (pdftex.def)             Requested size: 237.63522pt x 190.10184pt.
-<../graficos/ftv38.png, id=85, 1003.75pt x 803.0pt>
+<../graficos/ftv38.png, id=75, 1003.75pt x 803.0pt>
 File: ../graficos/ftv38.png Graphic file (type png)
 <use ../graficos/ftv38.png>
-Package pdftex.def Info: ../graficos/ftv38.png  used on input line 174.
+Package pdftex.def Info: ../graficos/ftv38.png  used on input line 176.
 (pdftex.def)             Requested size: 237.63522pt x 190.10184pt.
-<../graficos/p43.png, id=86, 1003.75pt x 803.0pt>
+ [3 <../graficos/01_valido_simetrico_50.png> <../graficos/02_valido_assimetrico_50.png> <../graficos/03_caso_limite_minimo_02.png> <../graficos/04_anomalia_destino_isolado.png> <../graficos/06_anomalia_subrota_obrigatoria.png> <../graficos/br17.png> <../graficos/ftv33.png>]
+<../graficos/p43.png, id=87, 1003.75pt x 803.0pt>
 File: ../graficos/p43.png Graphic file (type png)
 <use ../graficos/p43.png>
-Package pdftex.def Info: ../graficos/p43.png  used on input line 183.
+Package pdftex.def Info: ../graficos/p43.png  used on input line 185.
 (pdftex.def)             Requested size: 237.63522pt x 190.10184pt.
-<../graficos/ftv44.png, id=87, 1003.75pt x 803.0pt>
+<../graficos/ftv44.png, id=88, 1003.75pt x 803.0pt>
 File: ../graficos/ftv44.png Graphic file (type png)
 <use ../graficos/ftv44.png>
-Package pdftex.def Info: ../graficos/ftv44.png  used on input line 189.
+Package pdftex.def Info: ../graficos/ftv44.png  used on input line 191.
 (pdftex.def)             Requested size: 237.63522pt x 190.10184pt.
-<../graficos/ftv47.png, id=88, 1003.75pt x 803.0pt>
+<../graficos/ftv47.png, id=89, 1003.75pt x 803.0pt>
 File: ../graficos/ftv47.png Graphic file (type png)
 <use ../graficos/ftv47.png>
-Package pdftex.def Info: ../graficos/ftv47.png  used on input line 198.
+Package pdftex.def Info: ../graficos/ftv47.png  used on input line 200.
 (pdftex.def)             Requested size: 237.63522pt x 190.10184pt.
-<../graficos/ry48p.png, id=89, 1003.75pt x 803.0pt>
+<../graficos/ry48p.png, id=90, 1003.75pt x 803.0pt>
 File: ../graficos/ry48p.png Graphic file (type png)
 <use ../graficos/ry48p.png>
-Package pdftex.def Info: ../graficos/ry48p.png  used on input line 204.
+Package pdftex.def Info: ../graficos/ry48p.png  used on input line 206.
 (pdftex.def)             Requested size: 237.63522pt x 190.10184pt.
- [4 <../graficos/br17.png> <../graficos/ftv33.png> <../graficos/ftv35.png> <../graficos/ftv38.png> <../graficos/p43.png> <../graficos/ftv44.png>]
-<../graficos/ft53.png, id=100, 1003.75pt x 803.0pt>
+<../graficos/ft53.png, id=91, 1003.75pt x 803.0pt>
 File: ../graficos/ft53.png Graphic file (type png)
 <use ../graficos/ft53.png>
-Package pdftex.def Info: ../graficos/ft53.png  used on input line 213.
+Package pdftex.def Info: ../graficos/ft53.png  used on input line 215.
 (pdftex.def)             Requested size: 237.63522pt x 190.10184pt.
-<../graficos/ftv55.png, id=101, 1003.75pt x 803.0pt>
+<../graficos/ftv55.png, id=92, 1003.75pt x 803.0pt>
 File: ../graficos/ftv55.png Graphic file (type png)
 <use ../graficos/ftv55.png>
-Package pdftex.def Info: ../graficos/ftv55.png  used on input line 219.
+Package pdftex.def Info: ../graficos/ftv55.png  used on input line 221.
 (pdftex.def)             Requested size: 237.63522pt x 190.10184pt.
-<../graficos/ftv64.png, id=102, 1003.75pt x 803.0pt>
+ [4 <../graficos/ftv35.png> <../graficos/ftv38.png> <../graficos/p43.png> <../graficos/ftv44.png> <../graficos/ftv47.png> <../graficos/ry48p.png>]
+<../graficos/ftv64.png, id=103, 1003.75pt x 803.0pt>
 File: ../graficos/ftv64.png Graphic file (type png)
 <use ../graficos/ftv64.png>
-Package pdftex.def Info: ../graficos/ftv64.png  used on input line 228.
+Package pdftex.def Info: ../graficos/ftv64.png  used on input line 230.
 (pdftex.def)             Requested size: 237.63522pt x 190.10184pt.
-<../graficos/ft70.png, id=103, 1003.75pt x 803.0pt>
+<../graficos/ft70.png, id=104, 1003.75pt x 803.0pt>
 File: ../graficos/ft70.png Graphic file (type png)
 <use ../graficos/ft70.png>
-Package pdftex.def Info: ../graficos/ft70.png  used on input line 234.
+Package pdftex.def Info: ../graficos/ft70.png  used on input line 236.
 (pdftex.def)             Requested size: 237.63522pt x 190.10184pt.
-<../graficos/ftv70.png, id=104, 1003.75pt x 803.0pt>
+<../graficos/ftv70.png, id=105, 1003.75pt x 803.0pt>
 File: ../graficos/ftv70.png Graphic file (type png)
 <use ../graficos/ftv70.png>
-Package pdftex.def Info: ../graficos/ftv70.png  used on input line 243.
+Package pdftex.def Info: ../graficos/ftv70.png  used on input line 245.
 (pdftex.def)             Requested size: 237.63522pt x 190.10184pt.
- [5 <../graficos/ftv47.png> <../graficos/ry48p.png> <../graficos/ft53.png> <../graficos/ftv55.png> <../graficos/ftv64.png> <../graficos/ft70.png>] [6 <../graficos/ftv70.png>] (./main.aux)
+ [5 <../graficos/ft53.png> <../graficos/ftv55.png> <../graficos/ftv64.png> <../graficos/ft70.png> <../graficos/ftv70.png>] (./main.aux)
  ***********
 LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2024-01-22>
@@ -540,18 +541,18 @@ Package rerunfilecheck Info: File `main.out' has not changed.
 (rerunfilecheck)             Checksum: C06A18D1002AD12D645F5A448CEA461D;2302.
  ) 
 Here is how much of TeX's memory you used:
- 13766 strings out of 474222
- 217505 string characters out of 5748733
- 1961975 words of memory out of 5000000
+ 13765 strings out of 474222
+ 217499 string characters out of 5748733
+ 1965975 words of memory out of 5000000
  35734 multiletter control sequences out of 15000+600000
- 570034 words of font info for 117 fonts, out of 8000000 for 9000
+ 570035 words of font info for 117 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  75i,10n,79p,1096b,468s stack positions out of 10000i,1000n,20000p,200000b,200000s
-</usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx9.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi5.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi6.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi9.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr9.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy9.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt9.pfb>
-Output written on main.pdf (6 pages, 3011101 bytes).
+</usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx9.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi5.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr9.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy9.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt8.pfb>
+Output written on main.pdf (5 pages, 3004143 bytes).
 PDF statistics:
- 192 PDF objects out of 1000 (max. 8388607)
- 134 compressed objects within 2 object streams
- 36 named destinations out of 1000 (max. 500000)
+ 183 PDF objects out of 1000 (max. 8388607)
+ 128 compressed objects within 2 object streams
+ 35 named destinations out of 1000 (max. 500000)
  25763 words of extra memory for PDF output out of 29859 (max. 10000000)
 

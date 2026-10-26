@@ -26,25 +26,26 @@
 \vspace{-1.8em}
 
 \section{Metodologia e Ambiente Experimental}
-Este trabalho apresenta os resultados computacionais da resolução exata e da relaxação linear para o Problema do Caminho Hamiltoniano Mínimo em grafos direcionados com extremidades fixadas (origem no nó 1 e término no nó $n$). O modelo emprega restrições de fluxo para garantir a passagem única pelos nós intermediários e variáveis de ordem de Miller-Tucker-Zemlin (MTZ) para impedir a formação de subciclos desconexos. O pipeline foi desenvolvido em Julia 1.12.6 com JuMP e o solucionador Gurobi sob ambiente Linux x86\_64 (Intel Core i5-12450HX com 12 threads e 15,34 GB de RAM), aplicando tempo limite de 180 segundos por instância para a solução inteira. A validação estrutural (Atividade 1) foi feita por um algoritmo independente que checa a existência de exatamente $n-1$ arcos, os graus de entrada e saída em cada vértice e o rastreamento sequencial do caminho de 1 até $n$ sem ciclos isolados.
+Este trabalho apresenta os resultados computacionais da resolução exata e da relaxação linear para o Problema do Caminho Hamiltoniano Mínimo em grafos direcionados com extremidades fixadas (origem no nó 1 e término no nó $n$). O modelo emprega restrições de fluxo para garantir a passagem única pelos nós intermediários e variáveis de ordem de Miller-Tucker-Zemlin (MTZ) para impedir a formação de subciclos desconexos. O pipeline foi desenvolvido em Julia 1.12.6 com JuMP e o solucionador Gurobi sob ambiente Linux x86\_64 (Intel Core i5-12450HX com 12 threads e 15,34 GB de RAM ddr5), aplicando tempo limite de 180 segundos por instância para a solução inteira. A validação estrutural (Atividade 1) foi feita por um algoritmo independente que checa a existência de exatamente $n-1$ arcos, os graus de entrada e saída em cada vértice e o rastreamento sequencial do caminho de 1 até $n$ sem ciclos isolados.
 
 \section{Resultados das Instâncias Sintéticas e Testes Defensivos}
 A Tabela~\ref{tab:sinteticas} apresenta os resultados para matrizes de teste controladas, casos limites e anomalias estruturais. O GAP de integralidade foi calculado como $\text{GAP} = \frac{Z_{IP} - Z_{LP}}{Z_{IP}} \times 100\%$.
 
 \begin{table}[H]
 \centering
-\small
-\caption{Resultados nas instâncias sintéticas de teste.}
+\scriptsize
+\setlength{\tabcolsep}{3.5pt}
+\caption{Resultados nas instâncias sintéticas de teste (tempo em segundos e memória em MB).}
 \label{tab:sinteticas}
-\begin{tabular}{lccccccr}
+\begin{tabular}{lccccccccr}
 \toprule
-Instância & $n$ & $Z_{LP}$ & $T_{LP}$ (s) & $Z_{IP}$ & $T_{IP}$ (s) & GAP (\%) & Status \\
+Instância & $n$ & $Z_{LP}$ & $T_{LP}$ (s) & $M_{LP}$ (MB) & $Z_{IP}$ & $T_{IP}$ (s) & $M_{IP}$ (MB) & GAP (\%) & Status \\
 \midrule
-\texttt{01\_valido\_simetrico\_50} & 50 & 424,64 & 1,63 & 512,90 & 4,02 & 17,21\% & Ótimo \\
-\texttt{02\_valido\_assimetrico\_50} & 50 & 447,64 & 0,02 & 574,60 & 16,82 & 22,09\% & Ótimo \\
-\texttt{03\_caso\_limite\_minimo\_02} & 2 & 15,00 & 0,00 & 15,00 & 0,00 & 0,00\% & Ótimo \\
-\texttt{04\_anomalia\_destino\_isolado} & 4 & 10024,00 & 0,00 & 10024,00 & 0,00 & 0,00\% & Ótimo \\
-\texttt{06\_anomalia\_subrota\_obrig.} & 4 & 10026,50 & 0,00 & 20008,00 & 0,00 & 49,89\% & Ótimo \\
+\texttt{01\_valido\_simetrico\_50} & 50 & 424,64 & 1,73 & 229,61 & 512,90 & 3,23 & 11,95 & 17,21\% & Ótimo \\
+\texttt{02\_valido\_assimetrico\_50} & 50 & 447,64 & 0,02 & 7,42 & 574,60 & 20,16 & 9,74 & 22,09\% & Ótimo \\
+\texttt{03\_caso\_limite\_minimo\_02} & 2 & 15,00 & 0,00 & 0,12 & 15,00 & 0,00 & 0,12 & 0,00\% & Ótimo \\
+\texttt{04\_anomalia\_destino\_isolado} & 4 & 10024,00 & 0,00 & 0,16 & 10024,00 & 0,00 & 0,17 & 0,00\% & Ótimo \\
+\texttt{06\_anomalia\_subrota\_obrig.} & 4 & 10026,50 & 0,00 & 0,16 & 20008,00 & 0,00 & 0,17 & 49,89\% & Ótimo \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -56,26 +57,27 @@ A Tabela~\ref{tab:tsplib} consolida a resolução das 13 instâncias assimétric
 
 \begin{table}[H]
 \centering
-\small
-\caption{Resultados nas instâncias da TSPLIB com tempo limite de 180s.}
+\scriptsize
+\setlength{\tabcolsep}{3.5pt}
+\caption{Resultados nas instâncias da TSPLIB com tempo limite de 180s ($M_{LP}$ e $M_{IP}$ em MB).}
 \label{tab:tsplib}
-\begin{tabular}{lccccccr}
+\begin{tabular}{lccccccccr}
 \toprule
-Instância & $n$ & $Z_{LP}$ & $T_{LP}$ (s) & $Z_{IP}$ & $T_{IP}$ (s) & GAP (\%) & Status \\
+Instância & $n$ & $Z_{LP}$ & $T_{LP}$ (s) & $M_{LP}$ (MB) & $Z_{IP}$ & $T_{IP}$ (s) & $M_{IP}$ (MB) & GAP (\%) & Status \\
 \midrule
-\texttt{br17.atsp} & 17 & 7,12 & 0,01 & 34,00 & 0,29 & 79,07\% & Ótimo \\
-\texttt{ft53.atsp} & 53 & 5691,46 & 0,02 & 6196,00 & 11,29 & 8,14\% & Ótimo \\
-\texttt{ft70.atsp} & 70 & 37364,08 & 0,04 & 37655,00 & 1,56 & 0,77\% & Ótimo \\
-\texttt{ftv33.atsp} & 34 & 1205,95 & 0,01 & 1275,00 & 0,34 & 5,42\% & Ótimo \\
-\texttt{ftv35.atsp} & 36 & 1386,07 & 0,01 & 1443,00 & 0,27 & 3,95\% & Ótimo \\
-\texttt{ftv38.atsp} & 39 & 1444,69 & 0,01 & 1511,00 & 0,27 & 4,39\% & Ótimo \\
-\texttt{ftv44.atsp} & 45 & 1549,51 & 0,02 & 1614,00 & 0,75 & 4,00\% & Ótimo \\
-\texttt{ftv47.atsp} & 48 & 1631,39 & 0,02 & 1754,00 & 1,49 & 6,99\% & Ótimo \\
-\texttt{ftv55.atsp} & 56 & 1430,57 & 0,03 & 1613,00 & 2,46 & 11,31\% & Ótimo \\
-\texttt{ftv64.atsp} & 65 & 1740,12 & 0,03 & 1840,00 & 5,22 & 5,43\% & Ótimo \\
-\texttt{ftv70.atsp} & 71 & 1788,09 & 0,03 & 1958,00 & 6,23 & 8,68\% & Ótimo \\
-\texttt{p43.atsp} & 43 & 501,65 & 0,02 & 589,00 & 180,03 & 14,83\% & Limite Tempo \\
-\texttt{ry48p.atsp} & 48 & 12700,96 & 0,02 & 14070,00 & 1,61 & 9,73\% & Ótimo \\
+\texttt{br17.atsp} & 17 & 7,12 & 0,01 & 1,07 & 34,00 & 0,32 & 1,24 & 79,07\% & Ótimo \\
+\texttt{ft53.atsp} & 53 & 5691,46 & 0,03 & 9,77 & 6196,00 & 12,37 & 11,68 & 8,14\% & Ótimo \\
+\texttt{ft70.atsp} & 70 & 37364,08 & 0,05 & 15,47 & 37655,00 & 2,06 & 19,15 & 0,77\% & Ótimo \\
+\texttt{ftv33.atsp} & 34 & 1205,95 & 0,01 & 3,64 & 1275,00 & 0,47 & 4,37 & 5,42\% & Ótimo \\
+\texttt{ftv35.atsp} & 36 & 1386,07 & 0,02 & 4,19 & 1443,00 & 0,35 & 5,01 & 3,95\% & Ótimo \\
+\texttt{ftv38.atsp} & 39 & 1444,69 & 0,01 & 5,17 & 1511,00 & 0,39 & 6,21 & 4,39\% & Ótimo \\
+\texttt{ftv44.atsp} & 45 & 1549,51 & 0,02 & 6,37 & 1614,00 & 0,95 & 7,82 & 4,00\% & Ótimo \\
+\texttt{ftv47.atsp} & 48 & 1631,39 & 0,02 & 7,00 & 1754,00 & 1,43 & 8,62 & 6,99\% & Ótimo \\
+\texttt{ftv55.atsp} & 56 & 1430,57 & 0,03 & 11,56 & 1613,00 & 2,06 & 13,52 & 11,31\% & Ótimo \\
+\texttt{ftv64.atsp} & 65 & 1740,12 & 0,04 & 14,02 & 1840,00 & 6,11 & 17,15 & 5,43\% & Ótimo \\
+\texttt{ftv70.atsp} & 71 & 1788,09 & 0,06 & 15,77 & 1958,00 & 6,89 & 19,52 & 8,68\% & Ótimo \\
+\texttt{p43.atsp} & 43 & 501,65 & 0,03 & 5,89 & 589,00 & 180,04 & 9,49 & 14,83\% & Limite Tempo \\
+\texttt{ry48p.atsp} & 48 & 12700,96 & 0,02 & 7,00 & 14070,00 & 1,70 & 8,61 & 9,73\% & Ótimo \\
 \bottomrule
 \end{tabular}
 \end{table}
