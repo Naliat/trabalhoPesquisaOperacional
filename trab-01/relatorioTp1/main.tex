@@ -11,7 +11,7 @@
 \usepackage{float}
 \usepackage{hyperref}
 \usepackage{titlesec}
-\titlespacing*{\section}{0pt}{8pt}{4pt}
+\titlespacing*{\section}{0pt}{4pt}{2pt}
 \titlespacing*{\subsection}{0pt}{6pt}{3pt}
 
 \title{\large\textbf{Relatório Técnico: Resultados Computacionais do Caminho Hamiltoniano Mínimo via MTZ}}
@@ -26,7 +26,7 @@
 \vspace{-1.8em}
 
 \section{Metodologia e Ambiente Experimental}
-Este trabalho apresenta os resultados computacionais da resolução exata e da relaxação linear para o Problema do Caminho Hamiltoniano Mínimo em grafos direcionados com extremidades fixadas (origem no nó 1 e término no nó $n$). O modelo emprega restrições de fluxo para garantir a passagem única pelos nós intermediários e variáveis de ordem de Miller-Tucker-Zemlin (MTZ) para impedir a formação de subciclos desconexos. O pipeline foi desenvolvido em Julia 1.12.6 com JuMP e o solucionador Gurobi sob ambiente Linux x86\_64 (Intel Core i5-12450HX com 12 threads e 15,34 GB de RAM ddr5), aplicando tempo limite de 180 segundos por instância para a solução inteira. A validação estrutural (Atividade 1) foi feita por um algoritmo independente que checa a existência de exatamente $n-1$ arcos, os graus de entrada e saída em cada vértice e o rastreamento sequencial do caminho de 1 até $n$ sem ciclos isolados.
+Este trabalho apresenta os resultados computacionais da resolução exata e da relaxação linear para o Problema do Caminho Hamiltoniano Mínimo em grafos direcionados com extremidades fixadas (origem no nó 1 e término no nó $n$). O modelo emprega restrições de fluxo para garantir a passagem única pelos nós intermediários e variáveis de ordem de Miller-Tucker-Zemlin (MTZ) para impedir a formação de subciclos desconexos. O código foi desenvolvido em Julia 1.12.6 com JuMP e o solucionador Gurobi sob ambiente Linux x86\_64 (Intel Core i5-12450HX com 12 threads e 15,34 GB de RAM ddr5), com o tempo limite de 180 segundos por instância para a solução inteira. A validação estrutural (Atividade 1) foi feita por um algoritmo independente que checa a existência de exatamente $n-1$ arcos, os graus de entrada e saída em cada vértice e o rastreamento sequencial do caminho de 1 até $n$ sem ciclos isolados.
 
 \section{Resultados das Instâncias Sintéticas e Testes Defensivos}
 A Tabela~\ref{tab:sinteticas} apresenta os resultados para matrizes de teste controladas, casos limites e anomalias estruturais. O GAP de integralidade foi calculado como $\text{GAP} = \frac{Z_{IP} - Z_{LP}}{Z_{IP}} \times 100\%$.
@@ -53,7 +53,7 @@ Instância & $n$ & $Z_{LP}$ & $T_{LP}$ (s) & $M_{LP}$ (MB) & $Z_{IP}$ & $T_{IP}$
 \noindent O leitor defensivo barrou adequadamente todos os arquivos corrompidos: \texttt{05\_anomalia\_custo\_negativo} (custo negativo de $-50,0$), \texttt{07\_erro\_linhas\_insuficientes} (4 linhas lidas onde esperava 6), \texttt{08\_erro\_matriz\_nao\_quadrada} (linha com 5 colunas em vez de 3), \texttt{09\_erro\_arquivo\_vazio} (arquivo vazio) e \texttt{10\_erro\_caractere\_invalido} (texto não numérico \texttt{CUSTO\_ALTO}).
 
 \section{Resultados das Instâncias Oficiais da TSPLIB}
-A Tabela~\ref{tab:tsplib} consolida a resolução das 13 instâncias assimétricas da literatura internacional.
+A Tabela~\ref{tab:tsplib} consolida a resolução das 13 instâncias.
 
 \begin{table}[H]
 \centering

@@ -1,5 +1,5 @@
 # Fdb version 4
-["pdflatex"] 1793053712.80019 "/home/tailan-de-souza/Documentos/8 Semestre/trabalhoPesquisaOperacional/trab-01/relatorioTp1/main.tex" "main.pdf" "main" 1793053715.08225 0
+["pdflatex"] 1793058331.50026 "/home/tailan-de-souza/Documentos/8 Semestre/trabalhoPesquisaOperacional/trab-01/relatorioTp1/main.tex" "main.pdf" "main" 1793058334.35286 0
   "../graficos/01_valido_simetrico_50.png" 1793051609.20211 255265 42b8caec7ff8038f21c146e9c6bb5602 ""
   "../graficos/02_valido_assimetrico_50.png" 1793051630.81847 279769 b0b38c1f7c5024190f3c1c79d0ccda77 ""
   "../graficos/03_caso_limite_minimo_02.png" 1793051632.7275 38009 1d3f9160bee00c07976ece80e6dbd569 ""
@@ -19,7 +19,7 @@
   "../graficos/p43.png" 1793051867.60934 204832 e15ed8645f97f3163cf0eeeabf864e74 ""
   "../graficos/ry48p.png" 1793051870.57139 221190 d4aa580704091ed2ca40bcd676de57bc ""
   "/etc/texmf/web2c/texmf.cnf" 1773409997.7804 475 c0e671620eb5563b2130f56340a5fde8 ""
-  "/home/tailan-de-souza/Documentos/8 Semestre/trabalhoPesquisaOperacional/trab-01/relatorioTp1/main.tex" 1793053713.34854 17359 79abef97be54c8068e5c40a56cc95dea ""
+  "/home/tailan-de-souza/Documentos/8 Semestre/trabalhoPesquisaOperacional/trab-01/relatorioTp1/main.tex" 1793058331.14152 17312 e9f8de9bb7ec21c40ecef8f70c57bdf2 ""
   "/usr/share/texlive/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex7.tfm" 1246382020 1004 54797486969f23fa377b128694d548df ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex8.tfm" 1246382020 988 bdf658c3bfc2d96d3c8b02cfc1c94c20 ""
@@ -132,9 +132,9 @@
   "/usr/share/texmf/web2c/texmf.cnf" 1707919699 40399 f2c302f7d2af602abb742093540a5834 ""
   "/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map" 1773410077.9509 5472669 54eaf61a88b6b7896ebd0dac973cb29c ""
   "/var/lib/texmf/web2c/pdftex/pdflatex.fmt" 1773410100 8214507 8182795458c80235f92da16082d9e057 ""
-  "main.aux" 1793053715.01154 5049 848f226ba3cd6ee89be6b4082b59e283 "pdflatex"
-  "main.out" 1793053715.01154 2302 c06a18d1002ad12d645f5a448cea461d "pdflatex"
-  "main.tex" 1793053713.34854 17359 79abef97be54c8068e5c40a56cc95dea ""
+  "main.aux" 1793058334.30073 5049 848f226ba3cd6ee89be6b4082b59e283 "pdflatex"
+  "main.out" 1793058334.30073 2302 c06a18d1002ad12d645f5a448cea461d "pdflatex"
+  "main.tex" 1793058331.14152 17312 e9f8de9bb7ec21c40ecef8f70c57bdf2 ""
   (generated)
   "main.aux"
   "main.log"
