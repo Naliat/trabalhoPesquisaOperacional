@@ -1,19 +1,12 @@
-# Arquivo: main.jl
-# Responsabilidade: Leitura de dados, execução em lote, geração de plots e escrita do CSV.
-
-# Desativa a abertura de pop-ups gráficos do Plots
 ENV["GKSwstype"] = "100"
 
-using DataFrames
-using CSV
 using Plots
 using Random
+using Printf
 
 include("grasp_solver.jl")
 
-"""
-Carrega e monta a matriz de custos de arquivos .atsp.
-"""
+# Carrega e monta a matriz de custos de arquivos .atsp.
 function load_atsp_instance(path::String)
     if !isfile(path) || filesize(path) == 0
         error("Arquivo vazio ou inexistente.")
@@ -52,13 +45,11 @@ function load_atsp_instance(path::String)
     return n, C
 end
 
-"""
-Gera e salva silenciosamente no disco o gráfico cartesiano da rota.
-"""
+# Gera e salva no disco o gráfico da rota percorrida.
 function generate_path_plot(n::Int, route::Vector{Int}, instance_name::String, output_folder::String)
     if isempty(route) return end
     if !isdir(output_folder) mkpath(output_folder) end
-    gr(display=false)
+    gr()
     
     seed = hash(instance_name) % 10000
     Random.seed!(abs(seed))
@@ -66,7 +57,7 @@ function generate_path_plot(n::Int, route::Vector{Int}, instance_name::String, o
     y_nodes = rand(5.0:95.0, n)
     
     p = plot(
-        title = "PCHM GRASP - \$instance_name (n = \$n)",
+        title = "PCHM GRASP - $instance_name (n = $n)",
         titlefont = font(11, :bold),
         size = (1000, 800),
         grid = true,
@@ -85,77 +76,66 @@ function generate_path_plot(n::Int, route::Vector{Int}, instance_name::String, o
     end
     
     scatter!(x_nodes, y_nodes, markersize = 6, color = :lightgrey, markerstrokecolor = :black, label = "Vertices")
-    scatter!([x_nodes[1]], [y_nodes[1]], color = :lime, markersize = 12, marker = :square, label = "Origem")
-    scatter!([x_nodes[n]], [y_nodes[n]], color = :crimson, markersize = 12, marker = :star8, label = "Destino")
+    scatter!([x_nodes[1]], [y_nodes[1]], color = :lime, markersize = 12, marker = :square, label = "Origem (s=1)")
+    scatter!([x_nodes[n]], [y_nodes[n]], color = :crimson, markersize = 12, marker = :star8, label = "Destino (t=$n)")
     
     if n <= 60
         for i in 1:n annotate!(x_nodes[i], y_nodes[i] + 2.0, text(string(i), :black, :center, :bold, 6)) end
     end
     
-    # CORREÇÃO AQUI: Substitui o final .atsp ou .txt por .png de forma limpa para evitar erro de assinatura no savefig
     output_png = replace(instance_name, r"\.(atsp|txt)$" => ".png")
     savefig(p, joinpath(output_folder, output_png))
 end
 
-"""
-Varre a pasta de instâncias, executa as heurísticas em lote e exporta o CSV estruturado.
-"""
+# Executa a Heurística Inicial (Ativ. 1) e a Meta-heurística GRASP (Ativ. 2) em lote.
 function execute_batch_processing()
     target_dir = "instancias-professor"
     if !ispath(target_dir) return end
 
-    atsp_files = filter(f -> endswith(f, ".atsp"), readdir(target_dir))
-    
-    results_df = DataFrame(
-        Instancia = String[], N = Int[], 
-        Status_LP = String[], Z_LP = Float64[], Tempo_LP_s = Float64[],
-        Status_IP = String[], Z_IP = Float64[], Tempo_IP_s = Float64[],
-        GAP_Percentual = Float64[], Caminho_Valido = Bool[], Rota_Percorrida = String[]
-    )
+    atsp_files = sort(filter(f -> endswith(f, ".atsp"), readdir(target_dir)))
+    if !ispath("data") mkpath("data") end
+    csv_path = joinpath("data", "resultado_otimizacao.csv")
 
-    for file in atsp_files
-        full_path = joinpath(target_dir, file)
-        println("PROCESSING: ", file)
-        
-        n, costs = load_atsp_instance(full_path)
-        
-        # Fase Construtiva (Mapeada para o bloco LP)
-        t_start_lp = time()
-        constructed_route = grasp_construction(n, costs, 0.15)
-        t_end_lp = time()
-        z_lp = calculate_route_cost(constructed_route, costs)
-        time_lp = t_end_lp - t_start_lp
-        
-        # Meta-heurística Completa (Mapeada para o bloco IP)
-        t_start_ip = time()
-        best_route, best_cost_global = run_grasp_metaheuristic(n, costs, 1000, 0.15)
-        t_end_ip = time()
-        time_ip = t_end_ip - t_start_ip
-        
-        generate_path_plot(n, best_route, file, "data/plots")
-        
-        gap = z_lp > 0 ? ((z_lp - best_cost_global) / z_lp) * 100.0 : 0.0
-        is_valid = (length(best_route) == n && best_route[1] == 1 && best_route[end] == n)
-        formatted_vector = "[" * join(best_route, ", ") * "]"
+    println(@sprintf("%-15s | %-3s | %10s | %8s | %10s | %8s | %9s | %-6s", 
+                     "Instancia", "n", "Z_Inicial", "T_Init", "Z_GRASP", "T_GRASP", "Melhoria", "Valido"))
+    println(repeat("-", 88))
 
-        push!(results_df, (
-            Instancia = file,
-            N = n,
-            Status_LP = "OPTIMAL",
-            Z_LP = round(z_lp, digits=2),
-            Tempo_LP_s = round(time_lp, digits=4),
-            Status_IP = "OPTIMAL",
-            Z_IP = round(best_cost_global, digits=2),
-            Tempo_IP_s = round(time_ip, digits=4),
-            GAP_Percentual = round(gap, digits=2),
-            Caminho_Valido = is_valid,
-            Rota_Percorrida = formatted_vector
-        ))
+    open(csv_path, "w") do f_csv
+        write(f_csv, "Instancia;N;Z_Inicial;Tempo_Inicial_s;Z_GRASP;Tempo_GRASP_s;Melhoria_Percentual;Caminho_Valido;Rota_Percorrida\n")
+
+        for file in atsp_files
+            full_path = joinpath(target_dir, file)
+            n, costs = load_atsp_instance(full_path)
+            
+            # 1. Heurística Inicial da Seção 2 (Atividade 1)
+            t_start_init = time()
+            initial_route = run_initial_heuristic(n, costs)
+            t_end_init = time()
+            z_init = calculate_route_cost(initial_route, costs)
+            time_init = t_end_init - t_start_init
+            
+            # 2. Meta-heurística GRASP Completa (Atividade 2)
+            Random.seed!(42)
+            t_start_grasp = time()
+            best_route, best_cost_global = run_grasp_metaheuristic(n, costs, 1000, 0.15)
+            t_end_grasp = time()
+            time_grasp = t_end_grasp - t_start_grasp
+            
+            generate_path_plot(n, best_route, file, "data/plots")
+            
+            melhoria = z_init > 0 ? ((z_init - best_cost_global) / z_init) * 100.0 : 0.0
+            is_valid = (length(best_route) == n && length(unique(best_route)) == n && best_route[1] == 1 && best_route[end] == n)
+            formatted_vector = "[" * join(best_route, ", ") * "]"
+
+            println(@sprintf("%-15s | %-3d | %10.2f | %7.4fs | %10.2f | %7.4fs | %8.2f%% | %-6s",
+                             file, n, z_init, time_init, best_cost_global, time_grasp, melhoria, string(is_valid)))
+
+            write(f_csv, "$file;$n;$(round(z_init, digits=2));$(round(time_init, digits=6));$(round(best_cost_global, digits=2));$(round(time_grasp, digits=4));$(round(melhoria, digits=2));$is_valid;$formatted_vector\n")
+        end
     end
 
-    if !ispath("data") mkdir("data") end
-    CSV.write(joinpath("data", "resultado_otimizacao.csv"), results_df, delim=';', header=true)
-    println("SUCCESS: Batch processing finished.")
+    println(repeat("-", 88))
+    println("Processamento concluido! Resultados salvos em data/resultado_otimizacao.csv")
 end
 
 execute_batch_processing()

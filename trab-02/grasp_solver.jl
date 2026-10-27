@@ -1,11 +1,6 @@
-# Arquivo: grasp_solver.jl
-# Responsabilidade: Lógica algorítmica do GRASP (Construção semi-gulosa e Busca Local Or-Opt).
-
 include("ds_union_find.jl")
 
-"""
-Calcula o custo total de uma sequência de nós.
-"""
+# Calcula o custo total de uma sequência de nós.
 function calculate_route_cost(route::Vector{Int}, costs::Matrix{Float64})
     cost = 0.0
     for i in 1:(length(route) - 1)
@@ -14,9 +9,7 @@ function calculate_route_cost(route::Vector{Int}, costs::Matrix{Float64})
     return cost
 end
 
-"""
-Heurística do Vizinho Mais Próximo sequencial de s=1 até t=n.
-"""
+# Heurística Inicial (Seção 2 / Atividade 1): Vizinho Mais Próximo de s=1 até t=n.
 function run_initial_heuristic(n::Int, costs::Matrix{Float64})
     visited = zeros(Bool, n)
     route = Int[]
@@ -43,9 +36,7 @@ function run_initial_heuristic(n::Int, costs::Matrix{Float64})
     return route
 end
 
-"""
-Gera uma solução inicial semi-gulosa usando Lista Restrita de Candidatos (RCL).
-"""
+# Fase construtiva semi-gulosa do GRASP usando Lista Restrita de Candidatos (RCL).
 function grasp_construction(n::Int, costs::Matrix{Float64}, alpha::Float64)
     uf = new_union_find(n)
     visited = zeros(Bool, n)
@@ -66,14 +57,13 @@ function grasp_construction(n::Int, costs::Matrix{Float64}, alpha::Float64)
         
         if isempty(candidates) break end
         
-        # CORREÇÃO AQUI: c[2] extrai apenas o valor numérico do custo
         c_min = minimum(c -> c[2], candidates)
         c_max = maximum(c -> c[2], candidates)
         threshold = c_min + alpha * (c_max - c_min)
         
         rcl = filter(c -> c[2] <= threshold, candidates)
         chosen = rand(rcl)
-        next_node = chosen[1] # Pega o índice do vértice escolhido
+        next_node = chosen[1]
         
         push!(route, next_node)
         union_sets!(uf, current, next_node)
@@ -85,9 +75,7 @@ function grasp_construction(n::Int, costs::Matrix{Float64}, alpha::Float64)
     return route
 end
 
-"""
-Refina a rota usando busca local por relocação de nós intermediários (Or-Opt).
-"""
+# Refina a rota usando busca local por realocação de nós intermediários (Or-Opt).
 function grasp_local_search!(route::Vector{Int}, costs::Matrix{Float64}, n::Int)
     improved = true
     best_cost = calculate_route_cost(route, costs)
@@ -115,9 +103,7 @@ function grasp_local_search!(route::Vector{Int}, costs::Matrix{Float64}, n::Int)
     return best_cost
 end
 
-"""
-Executa o laço iterativo do GRASP guardando a melhor rota global.
-"""
+# Executa o laço iterativo do GRASP guardando a melhor rota global (Atividade 2).
 function run_grasp_metaheuristic(n::Int, costs::Matrix{Float64}, max_iterations::Int, alpha::Float64)
     best_route = Int[]
     best_cost_global = Inf
