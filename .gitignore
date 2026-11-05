@@ -1,0 +1,16 @@
+
+.vscode/
+
+
+*.aux
+*.fdb_latexmk
+*.fls
+*.log
+*.out
+*.synctex.gz
+*.toc
+*.bbl
+*.blg
+
+
+trab-02/data/calibracao_log.txt

@@ -98,9 +98,11 @@ function grasp_local_search!(route::Vector{Int}, costs::Matrix{Float64}, n::Int)
 end
 
 # Executa o laço iterativo do GRASP sem Union-Find guardando a melhor rota global (Atividade 2).
-function run_grasp_metaheuristic(n::Int, costs::Matrix{Float64}, max_iterations::Int, alpha::Float64)
+function run_grasp_metaheuristic(n::Int, costs::Matrix{Float64}, max_iterations::Int, alpha::Float64; checkpoints::Vector{Int}=Int[])
     best_route = Int[]
     best_cost_global = Inf
+    history = Dict{Int, Tuple{Float64, Float64, Vector{Int}}}()
+    t_start = time()
     
     for iteration in 1:max_iterations
         candidate_route = grasp_construction(n, costs, alpha)
@@ -111,6 +113,13 @@ function run_grasp_metaheuristic(n::Int, costs::Matrix{Float64}, max_iterations:
                 best_route = candidate_route
             end
         end
+        if iteration in checkpoints
+            history[iteration] = (best_cost_global, time() - t_start, copy(best_route))
+        end
     end
-    return best_route, best_cost_global
+    if isempty(checkpoints)
+        return best_route, best_cost_global
+    else
+        return best_route, best_cost_global, history
+    end
 end
